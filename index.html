@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#147d59">
+<title>MY DELIVERY LOG - 배달 수익 기록</title>
+<style>
+:root{--green:#147d59;--green2:#e5f5ed;--ink:#1f2937;--muted:#6b7280;--line:#e5e7eb;--bg:#f4f7f5;--white:#fff;--red:#c2413b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif}
+button,input{font:inherit}button{cursor:pointer}.wrap{max-width:980px;margin:0 auto;padding:16px 14px 36px}
+header{background:var(--green);color:white;border-radius:20px;padding:18px 20px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand small{display:block;letter-spacing:2px;font-size:11px;opacity:.85;font-weight:700}.brand h1{font-size:clamp(21px,4vw,29px);margin:4px 0 0}
+.header-right{text-align:right;font-size:12px}.header-right button{margin-top:7px;background:transparent;color:white;border:1px solid #ffffff80;border-radius:9px;padding:6px 10px}
+.card{background:var(--white);border:1px solid var(--line);border-radius:17px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px #14251a08}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stat{background:#f7faf8;border-radius:13px;padding:13px;min-width:0}
+.stat .label{color:var(--muted);font-size:12px}.stat .value{font-size:clamp(17px,3vw,25px);font-weight:800;margin-top:5px;overflow-wrap:anywhere}.stat .unit{font-size:12px;font-weight:600;margin-left:3px}
+.monthbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}.monthbar h2{font-size:20px;margin:0;text-align:center;flex:1}
+.arrow{width:38px;height:38px;border:1px solid var(--line);background:white;border-radius:11px;font-size:22px;color:var(--green)}
+.calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.weekday{text-align:center;font-size:12px;color:var(--muted);padding:5px 0}
+.day{min-height:67px;border:1px solid #edf0ed;border-radius:10px;background:#fff;padding:6px 3px;text-align:center;color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;min-width:0}
+.day .num{font-size:13px;font-weight:650}.day .amount{font-size:clamp(9px,1.5vw,12px);font-weight:750;color:var(--green);line-height:1.25;overflow-wrap:anywhere}
+.day.worked{background:var(--green2);border-color:#b7e4ce}.day.selected{outline:2px solid var(--green);outline-offset:-2px}.day.today .num:after{content:"오늘";font-size:9px;color:var(--green);display:block}.day.blank{background:transparent;border-color:transparent}
+.section-title{font-size:16px;margin:0 0 12px}.editor{background:#f8faf9;border:1px solid var(--line);border-radius:13px;padding:13px;display:grid;grid-template-columns:1fr 1fr auto;align-items:end;gap:10px}
+.editor label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}.editor input{width:100%;min-width:0;border:1px solid #d1d5db;border-radius:10px;padding:11px 10px;background:white;color:var(--ink)}
+.primary{border:0;background:var(--green);color:white;border-radius:10px;padding:11px 16px;font-weight:750}.danger{border:1px solid #f0c9c6;background:white;color:var(--red);border-radius:10px;padding:10px 12px}
+.edit-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}.hint{font-size:12px;color:var(--muted);margin:9px 0 0;line-height:1.5}
+.year-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.year-head h2{margin:0;font-size:18px}.year-head select{border:1px solid var(--line);border-radius:9px;background:white;padding:8px}
+.month-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.month-row{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid #edf0ed;border-radius:10px;padding:10px 12px;font-size:13px}.month-row strong{color:var(--green);text-align:right}
+.footer{font-size:11px;color:var(--muted);text-align:center;padding:10px}.auth{max-width:420px;margin:8vh auto;padding:24px}.auth h2{margin-top:0}.auth label{display:block;font-size:13px;color:var(--muted);margin:12px 0 6px}.auth input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px}.auth .primary{width:100%;margin-top:14px}
+.status{font-size:12px;color:var(--muted);min-height:18px;margin-top:8px}.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#202a25;color:#fff;padding:11px 16px;border-radius:11px;font-size:13px;display:none;max-width:90vw;z-index:10}.hidden{display:none!important}
+@media(max-width:600px){.wrap{padding:9px 8px 24px}header{padding:14px;border-radius:15px}.card{padding:12px;border-radius:14px}.stats{gap:6px}.stat{padding:10px 8px}.stat .label{font-size:10px}.monthbar h2{font-size:17px}.calendar{gap:3px}.day{min-height:57px;border-radius:8px;padding:5px 1px;gap:4px}.day .num{font-size:12px}.editor{grid-template-columns:1fr 1fr}.editor .primary{grid-column:1/-1;width:100%}.month-list{grid-template-columns:1fr}.header-right{font-size:10px}}
+</style>
+</head>
+<body>
+<div id="authView" class="card auth">
+<h2>MY DELIVERY LOG</h2><p>배달 수익 기록을 시작하려면 기존 Firebase 계정으로 로그인하세요.</p>
+<form id="loginForm"><label for="email">이메일</label><input id="email" type="email" autocomplete="username" required><label for="password">비밀번호</label><input id="password" type="password" autocomplete="current-password" required><button class="primary" type="submit">로그인</button></form>
+<div id="authStatus" class="status">기존 음주 기록 프로그램과 같은 계정을 사용할 수 있습니다.</div>
+</div>
+<div id="appView" class="wrap hidden">
+<header><div class="brand"><small>MY DELIVERY LOG</small><h1>배달 수익 기록</h1></div><div class="header-right"><div id="syncStatus">Firebase 연결 확인 중</div><button id="logoutBtn" type="button">로그아웃</button></div></header>
+<section class="card"><div class="stats">
+<div class="stat"><div class="label">이번 달 총수익</div><div class="value" id="monthTotal">0<span class="unit">원</span></div></div>
+<div class="stat"><div class="label">배달한 날</div><div class="value" id="monthDays">0<span class="unit">일</span></div></div>
+<div class="stat"><div class="label">하루 평균 수익</div><div class="value" id="monthAverage">0<span class="unit">원</span></div></div>
+</div></section>
+<section class="card"><div class="monthbar"><button class="arrow" id="prevMonth" aria-label="이전 달">‹</button><h2 id="monthTitle"></h2><button class="arrow" id="nextMonth" aria-label="다음 달">›</button></div><div class="calendar" id="calendar"></div><p class="hint">날짜를 누르면 그날의 배달 수익금을 입력하거나 수정할 수 있습니다. 수익이 없는 날은 기록하지 않아도 됩니다.</p></section>
+<section class="card" id="entryCard"><h2 class="section-title" id="entryTitle">날짜 선택</h2>
+<div class="editor"><div><label for="entryDate">날짜</label><input id="entryDate" type="date"></div><div><label for="entryAmount">그날 배달 수익금 (원)</label><input id="entryAmount" type="number" min="0" step="1" inputmode="numeric" placeholder="예: 135000"></div><button class="primary" id="saveBtn" type="button">저장하기</button></div>
+<div class="edit-actions"><button class="danger" id="deleteBtn" type="button">이 날짜 기록 삭제</button><span class="hint" id="entryHint">수익금을 입력한 날짜만 배달한 날로 계산합니다.</span></div></section>
+<section class="card"><div class="year-head"><h2>연간 통계</h2><select id="yearSelect" aria-label="통계 연도"></select></div>
+<div class="stats" style="margin-bottom:13px"><div class="stat"><div class="label">연간 총수익</div><div class="value" id="yearTotal">0<span class="unit">원</span></div></div><div class="stat"><div class="label">배달한 날</div><div class="value" id="yearDays">0<span class="unit">일</span></div></div><div class="stat"><div class="label">하루 평균</div><div class="value" id="yearAverage">0<span class="unit">원</span></div></div></div><div class="month-list" id="yearMonthList"></div></section>
+<section class="card"><h2 class="section-title">백업 및 복원</h2><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="small-btn" id="backupBtn" type="button">기록 백업 다운로드</button><button class="small-btn" id="restoreBtn" type="button">백업 파일 불러오기</button><input id="restoreFile" type="file" accept="application/json,.json" class="hidden"></div><p class="hint">Firebase에 자동 저장되지만, 중요한 기록은 JSON 파일로 별도 백업해 두세요. 복원은 기존 기록과 합쳐집니다.</p></section>
+<div class="footer">기록은 로그인한 계정의 Firebase에 저장되며, 휴대폰과 PC에서 자동 동기화됩니다.</div>
+</div><div class="toast" id="toast" role="status"></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+(function(){
+const firebaseConfig={apiKey:"AIzaSyAfV3mANHoyBH3lOq6cbHtqpmL-ecTA46k",authDomain:"my-drinking-log.firebaseapp.com",projectId:"my-drinking-log",storageBucket:"my-drinking-log.firebasestorage.app",messagingSenderId:"3946527388",appId:"1:3946527388:web:fd86eac27b4eaa992e4b59",measurementId:"G-2YHMG4XN1D"};
+firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.firestore(),$=id=>document.getElementById(id);
+const money=n=>Math.round(Number(n)||0).toLocaleString('ko-KR'),pad=n=>String(n).padStart(2,'0'),dateKey=(y,m,d)=>`${y}-${pad(m+1)}-${pad(d)}`;
+const today=new Date();let viewYear=today.getFullYear(),viewMonth=today.getMonth(),selected=dateKey(today.getFullYear(),today.getMonth(),today.getDate()),records={},user=null,unsubscribe=null,remoteReady=false,saveTimer=null,toastTimer=null;
+function showToast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.style.display='none',2600)}
+function status(msg){$('syncStatus').textContent=msg}
+function totalsForMonth(y,m){let total=0,days=0;Object.entries(records).forEach(([k,v])=>{const p=k.split('-').map(Number);if(p[0]===y&&p[1]===m+1&&Number.isFinite(Number(v))&&Number(v)>=0){total+=Number(v);days++}});return{total,days,average:days?Math.round(total/days):0}}
+function totalsForYear(y){let total=0,days=0;Object.entries(records).forEach(([k,v])=>{const p=k.split('-').map(Number);if(p[0]===y&&Number.isFinite(Number(v))&&Number(v)>=0){total+=Number(v);days++}});return{total,days,average:days?Math.round(total/days):0}}
+function setStat(id,n,unit){$(id).innerHTML=money(n)+`<span class="unit">${unit}</span>`}
+function render(){
+$('monthTitle').textContent=`${viewYear}년 ${viewMonth+1}월`;const mt=totalsForMonth(viewYear,viewMonth);setStat('monthTotal',mt.total,'원');setStat('monthDays',mt.days,'일');setStat('monthAverage',mt.average,'원');
+const cal=$('calendar');cal.innerHTML='';['일','월','화','수','목','금','토'].forEach((w,i)=>{const e=document.createElement('div');e.className='weekday';e.textContent=w;if(i===0)e.style.color='#c2413b';if(i===6)e.style.color='#4777bd';cal.appendChild(e)});
+const first=new Date(viewYear,viewMonth,1).getDay(),last=new Date(viewYear,viewMonth+1,0).getDate();for(let i=0;i<first;i++){const e=document.createElement('div');e.className='day blank';cal.appendChild(e)}
+for(let d=1;d<=last;d++){const k=dateKey(viewYear,viewMonth,d),has=Object.prototype.hasOwnProperty.call(records,k),e=document.createElement('button');e.type='button';e.className='day'+(has?' worked':'')+(selected===k?' selected':'');if(k===dateKey(today.getFullYear(),today.getMonth(),today.getDate()))e.classList.add('today');const n=document.createElement('span');n.className='num';n.textContent=d;e.appendChild(n);if(has){const a=document.createElement('span');a.className='amount';a.textContent=money(records[k])+'원';e.appendChild(a)}e.addEventListener('click',()=>chooseDate(k));cal.appendChild(e)}
+renderYearStats()}
+function renderYearStats(){const y=Number($('yearSelect').value)||viewYear,t=totalsForYear(y);setStat('yearTotal',t.total,'원');setStat('yearDays',t.days,'일');setStat('yearAverage',t.average,'원');const list=$('yearMonthList');list.innerHTML='';for(let m=0;m<12;m++){const x=totalsForMonth(y,m),row=document.createElement('div');row.className='month-row';const label=document.createElement('span');label.textContent=(m+1)+'월 · '+x.days+'일';const value=document.createElement('strong');value.textContent=money(x.total)+'원';row.append(label,value);row.addEventListener('click',()=>{viewYear=y;viewMonth=m;chooseDate(dateKey(y,m,1));window.scrollTo({top:0,behavior:'smooth'})});list.appendChild(row)}}
+function fillYears(){const ys=new Set([today.getFullYear(),viewYear]);Object.keys(records).forEach(k=>{const y=Number(k.slice(0,4));if(y>1900)ys.add(y)});const sel=$('yearSelect'),prev=Number(sel.value);sel.innerHTML='';[...ys].sort((a,b)=>b-a).forEach(y=>{const o=document.createElement('option');o.value=y;o.textContent=y+'년';sel.appendChild(o)});sel.value=ys.has(prev)?String(prev):String(viewYear)}
+function chooseDate(k){selected=k;const[y,m,d]=k.split('-').map(Number);viewYear=y;viewMonth=m-1;$('entryDate').value=k;$('entryAmount').value=Object.prototype.hasOwnProperty.call(records,k)?records[k]:'';$('entryTitle').textContent=`${y}년 ${m}월 ${d}일 수익 입력`;$('entryHint').textContent=Object.prototype.hasOwnProperty.call(records,k)?'저장된 수익금이 있습니다. 수정하거나 삭제할 수 있습니다.':'수익금을 입력한 날짜만 배달한 날로 계산합니다.';fillYears();render()}
+function saveToCloud(){if(!user||!remoteReady)return;status('Firebase 저장 중…');db.collection('users').doc(user.uid).set({deliveryRecords:Object.assign({},records),deliveryUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(()=>status('Firebase 연결됨 · 실시간 동기화 중')).catch(e=>{status('저장 오류: '+e.message);showToast('클라우드 저장 실패. 인터넷과 Firebase 권한을 확인하세요.')})}
+function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveToCloud,250)}
+function saveEntry(){const k=$('entryDate').value,raw=$('entryAmount').value;if(!k){showToast('날짜를 선택해 주세요.');return}if(raw.trim()===''){showToast('수익금을 입력해 주세요. 삭제하려면 기록 삭제를 누르세요.');return}const amount=Number(raw);if(!Number.isFinite(amount)||amount<0||!Number.isInteger(amount)){showToast('0원 이상의 정수 금액을 입력해 주세요.');return}records[k]=amount;selected=k;const[y,m]=k.split('-').map(Number);viewYear=y;viewMonth=m-1;fillYears();render();chooseDate(k);scheduleSave();showToast('수익금을 저장했습니다.')}
+function deleteEntry(){const k=$('entryDate').value;if(!k||!Object.prototype.hasOwnProperty.call(records,k)){showToast('삭제할 기록이 없습니다.');return}if(!confirm(`${k}의 배달 수익 기록을 삭제할까요?`))return;delete records[k];selected=k;fillYears();render();chooseDate(k);scheduleSave();showToast('해당 날짜 기록을 삭제했습니다.')}
+$('prevMonth').addEventListener('click',()=>{viewMonth--;if(viewMonth<0){viewMonth=11;viewYear--}chooseDate(dateKey(viewYear,viewMonth,1))});
+$('nextMonth').addEventListener('click',()=>{viewMonth++;if(viewMonth>11){viewMonth=0;viewYear++}chooseDate(dateKey(viewYear,viewMonth,1))});
+$('entryDate').addEventListener('change',()=>{if($('entryDate').value)chooseDate($('entryDate').value)});$('saveBtn').addEventListener('click',saveEntry);$('deleteBtn').addEventListener('click',deleteEntry);$('yearSelect').addEventListener('change',renderYearStats);
+$('backupBtn').addEventListener('click',()=>{const blob=new Blob([JSON.stringify({type:'my-delivery-log',version:1,exportedAt:new Date().toISOString(),records},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='delivery-log-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href);showToast('백업 파일을 다운로드했습니다.')});
+$('restoreBtn').addEventListener('click',()=>$('restoreFile').click());
+$('restoreFile').addEventListener('change',async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;try{const data=JSON.parse(await f.text()),incoming=data.records||data;if(!incoming||typeof incoming!=='object'||Array.isArray(incoming))throw new Error('형식');let count=0;Object.entries(incoming).forEach(([k,v])=>{if(/^\d{4}-\d{2}-\d{2}$/.test(k)&&Number.isFinite(Number(v))&&Number(v)>=0){records[k]=Math.round(Number(v));count++}});fillYears();render();scheduleSave();showToast(`${count}개 날짜 기록을 합쳤습니다.`)}catch(err){showToast('올바른 배달 기록 백업 파일이 아닙니다.')}e.target.value=''});
+$('loginForm').addEventListener('submit',async e=>{e.preventDefault();$('authStatus').textContent='로그인 중…';try{await auth.signInWithEmailAndPassword($('email').value.trim(),$('password').value);$('authStatus').textContent=''}catch(err){$('authStatus').textContent=err.code==='auth/invalid-credential'||err.code==='auth/wrong-password'?'이메일 또는 비밀번호를 확인해 주세요.':err.code==='auth/too-many-requests'?'로그인 시도가 많습니다. 잠시 후 다시 시도해 주세요.':'로그인 오류: '+err.message}});
+$('logoutBtn').addEventListener('click',()=>auth.signOut());
+auth.onAuthStateChanged(u=>{user=u;if(unsubscribe){unsubscribe();unsubscribe=null}remoteReady=false;if(!u){$('authView').classList.remove('hidden');$('appView').classList.add('hidden');return}$('authView').classList.add('hidden');$('appView').classList.remove('hidden');status('Firebase 연결 중…');unsubscribe=db.collection('users').doc(u.uid).onSnapshot(doc=>{const data=doc.exists?doc.data():{};records=(data&&data.deliveryRecords&&typeof data.deliveryRecords==='object')?data.deliveryRecords:{};Object.keys(records).forEach(k=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(k)||!Number.isFinite(Number(records[k]))||Number(records[k])<0)delete records[k];else records[k]=Number(records[k])});remoteReady=true;fillYears();render();chooseDate(selected);status('Firebase 연결됨 · 실시간 동기화 중')},err=>{status('동기화 오류: '+err.message);showToast('Firebase 읽기 오류. Firestore 보안 규칙을 확인하세요.')})});
+$('entryDate').value=selected;fillYears();chooseDate(selected);
+})();
+</script>
+</body>
+</html>
