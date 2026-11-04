@@ -57,7 +57,7 @@ header{background:var(--green);color:white;border-radius:20px;padding:18px 20px;
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 (function(){
-const firebaseConfig={apiKey:"AIzaSyAfV3mANHoyBH3lOq6cbHtqpmL-ecTA46k",authDomain:"my-drinking-log.firebaseapp.com",projectId:"my-drinking-log",storageBucket:"my-drinking-log.firebasestorage.app",messagingSenderId:"3946527388",appId:"1:3946527388:web:fd86eac27b4eaa992e4b59",measurementId:"G-2YHMG4XN1D"};
+const firebaseConfig={apiKey:"AIzaSyCEbTQZdoiJyHYqrJVLSpvx9SH38tq-owk",authDomain:"my-delivery-log.firebaseapp.com",projectId:"my-delivery-log",storageBucket:"my-delivery-log.firebasestorage.app",messagingSenderId:"1076887354521",appId:"1:1076887354521:web:c51b9950f641a52d95cc08"};
 firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.firestore(),$=id=>document.getElementById(id);
 const money=n=>Math.round(Number(n)||0).toLocaleString('ko-KR'),pad=n=>String(n).padStart(2,'0'),dateKey=(y,m,d)=>`${y}-${pad(m+1)}-${pad(d)}`;
 const today=new Date();let viewYear=today.getFullYear(),viewMonth=today.getMonth(),selected=dateKey(today.getFullYear(),today.getMonth(),today.getDate()),records={},user=null,unsubscribe=null,remoteReady=false,saveTimer=null,toastTimer=null;
